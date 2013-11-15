@@ -345,11 +345,11 @@ namespace Bugsnag.Library
             byte[] byteArray = Encoding.UTF8.GetBytes(serializedJSON);
 
             //  Post JSON to server:
-            HttpWebRequest request;
+            WebRequest request;
             if(useSSL)
-                request = WebRequest.CreateHttp(httpsUrl);
+                request = WebRequest.Create(httpsUrl);
             else
-                request = WebRequest.CreateHttp(httpUrl);
+                request = WebRequest.Create(httpUrl);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";

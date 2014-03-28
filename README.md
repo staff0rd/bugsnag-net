@@ -8,7 +8,10 @@ For more information about the examples below, you can visit https://bugsnag.com
 Quick Start
 -----------
 
-Add a reference to Bugsnag.Library.dll, or install the NuGet package (located here https://nuget.org/packages/Bugsnag.Library/ )
+Install the NuGet package:
+```powershell
+Install-Package Bugsnag.Library
+```
 
 Next, you will need to provide .NET BugSnag with your API key.  There are 2 ways to do this:  Choose one.
 

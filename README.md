@@ -3,6 +3,8 @@
 
 .NET Bugsnag is a notifier library for http://bugsnag.com.  It includes support for logging Events, Exceptions, Stacktrace information, and meta information.  
 
+[![Build status](https://ci.appveyor.com/api/projects/status/jncmi5xfno8u99m9)](https://ci.appveyor.com/project/danesparza/net-bugsnag)
+
 For more information about the examples below, you can visit https://bugsnag.com/docs/notifier-api for a full reference.
 
 Quick Start

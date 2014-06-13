@@ -10,7 +10,7 @@ For more information about the examples below, you can visit https://bugsnag.com
 Quick Start
 -----------
 
-Install the NuGet package:
+Install the [NuGet package](https://www.nuget.org/packages/Bugsnag.Library/):
 ```powershell
 Install-Package Bugsnag.Library
 ```

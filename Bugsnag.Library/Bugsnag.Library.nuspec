@@ -7,7 +7,7 @@
         <authors>Dan Esparza</authors>
         <owners>Dan Esparza</owners>
         <projectUrl>https://github.com/danesparza/net-bugsnag</projectUrl>
-        <iconUrl>https://twimg0-a.akamaihd.net/profile_images/2351270167/1yxa3fmnfehj9yvsf2m5.png</iconUrl>
+        <iconUrl>https://raw.githubusercontent.com/danesparza/net-bugsnag/master/bugsnag.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>.NET Bugsnag notifier library</description>
         <releaseNotes></releaseNotes>

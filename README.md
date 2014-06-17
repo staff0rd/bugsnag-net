@@ -60,8 +60,15 @@ protected void Application_Error(object sender, EventArgs e)
 Logging an exception in your application is also incredibly easy.  
 
 ```CSharp
-BugSnag bs = new BugSnag();
-bs.Notify(ex, null);
+try
+{
+   // Some code that causes an exception
+}
+catch(SomeSpecificExceptionType ex)
+{
+   BugSnag bs = new BugSnag();
+   bs.Notify(ex, null);
+}
 ```
 
 ### Including extra data
@@ -69,15 +76,23 @@ bs.Notify(ex, null);
 If you'd like to include extra data when you log exceptions, just pass it in the 'extra data' parameter.  It can be a simple object with a few properties, or an incredibly complex set of meta data
 
 ```CSharp
-BugSnag bs = new BugSnag();
-bs.Notify(ex, new
+try
 {
-    OtherReallyCoolData = new
-    {
-        color = "Yellow",
-        mood = "Mellow"
-    }
-});
+   // Some code that causes an exception
+}
+catch(SomeSpecificExceptionType ex)
+{
+
+   BugSnag bs = new BugSnag();
+   bs.Notify(ex, new
+   {
+       OtherReallyCoolData = new
+       {
+           color = "Yellow",
+           mood = "Mellow"
+       }
+   });
+}
 ```
         
 It's just that simple!

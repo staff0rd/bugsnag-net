@@ -15,7 +15,7 @@ namespace Bugsnag.Library.Tests
         {
             try
             {
-                throw new ApplicationException("Throwing an app extension.  You heartless bastard.");
+                throw new ApplicationException("Throwing an app exception.");
             }
             catch(Exception e)
             {
@@ -28,7 +28,7 @@ namespace Bugsnag.Library.Tests
         {
             try
             {
-                throw new Exception();
+                throw new Exception("Throwing an exception.");
             }
             catch (Exception e)
             {

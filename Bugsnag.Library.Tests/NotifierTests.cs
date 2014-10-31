@@ -91,6 +91,18 @@ namespace Bugsnag.Library.Tests
             GetNotifier().Notify(new Exception("Email Test"), user: new User { Email = "test@email.com" });
         }
 
+        [TestMethod]
+        public void OsVersionTest()
+        {
+            GetNotifier().Notify(new Exception("Os Version Test"), device: new Device { OsVersion = "1.1.1" });
+        }
+
+        [TestMethod]
+        public void HostnameTest()
+        {
+            GetNotifier().Notify(new Exception("Hostname Test"), device: new Device { Hostname = "my.host.name" });
+        }
+
         private static BugSnag GetNotifier()
         {
             var bugsnag = new BugSnag();

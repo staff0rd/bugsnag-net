@@ -15,6 +15,7 @@ namespace Bugsnag.Library.Data
         {
             Exceptions = new List<Exception>();
             User = new User();
+            Device = new Device();
         }
 
         /// <summary>
@@ -40,13 +41,6 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "exceptions")]
         public List<Exception> Exceptions { get; set; }
-
-        /// <summary>
-        /// Information about the app that crashed.
-        /// These fields are optional but highly recommended
-        /// </summary>
-        [DataMember(Name = "app")]
-        public App App { get; set; }
 
         /// <summary>
         /// A string representing what was happening in the application at the
@@ -92,5 +86,19 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "user")]
         public User User { get; set; }
+
+        /// <summary>
+        /// Information about the app that crashed.
+        /// These fields are optional but highly recommended
+        /// </summary>
+        [DataMember(Name = "app")]
+        public App App { get; set; }
+
+        /// <summary>
+        /// Information about the computer/device running the app
+        /// These fields are optional but highly recommended
+        /// </summary>
+        [DataMember(Name = "device")]
+        public Device Device { get; set; }
     }
 }

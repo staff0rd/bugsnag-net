@@ -29,8 +29,6 @@ namespace Bugsnag.Library
 
         public string ApplicationVersion { get; set; }
 
-        public string OsVersion { get; set; }
-
         public BugSnag(string apiKey) : this()
         {
             this.ApiKey = apiKey;
@@ -96,15 +94,15 @@ namespace Bugsnag.Library
             }
         }
 
-        public void Notify(System.Exception exception, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
+        public void Notify(System.Exception exception, string context = null, string groupingHash = null, Severity? severity = null, User user = null, Device device = null, object extraData = null)
         {
-            Notify(new[] { exception }, context, groupingHash, severity, user, extraData);
+            Notify(new[] { exception }, context, groupingHash, severity, user, device, extraData);
         }
 
-        public void Notify(IList<System.Exception> exList, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
+        public void Notify(IList<System.Exception> exList, string context = null, string groupingHash = null, Severity? severity = null, User user = null, Device device = null, object extraData = null)
         {
             var events = new List<Event>();
-            events.Add(CreateEvent(exList, context, groupingHash, severity, user, extraData));
+            events.Add(CreateEvent(exList, context, groupingHash, severity, user, device, extraData));
 
             var notification = new ErrorNotification
             {
@@ -136,7 +134,7 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(IList<System.Exception> exceptions, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
+        private Event CreateEvent(IList<System.Exception> exceptions, string context = null, string groupingHash = null, Severity? severity = null, User user = null, Device device = null, object extraData = null)
         {
             var retval = new Event
             {
@@ -145,7 +143,8 @@ namespace Bugsnag.Library
                 GroupingHash = groupingHash,
                 Severity = severity ?? Severity.error,
                 App = new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion },
-                User = user ?? new User()
+                User = user ?? new User(),
+                Device = device
             };
 
             if (retval.User.Id == null)

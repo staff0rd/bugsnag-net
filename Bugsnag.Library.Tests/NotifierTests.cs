@@ -48,7 +48,7 @@ namespace Bugsnag.Library.Tests
             }
             catch(Exception e)
             {
-                Notify(e);
+                GetNotifier().Notify(e);
             }
         }
 
@@ -61,23 +61,28 @@ namespace Bugsnag.Library.Tests
             }
             catch (Exception e)
             {
-                Notify(e);
+                GetNotifier().Notify(e);
             }
         }
 
-        private static void Notify(Exception ex)
+        [TestMethod]
+        public void VersionTest()
         {
             var bs = GetNotifier();
             bs.ApplicationVersion = "1.0";
+            bs.Notify(new Exception());
+        }
 
-            bs.Notify(ex, new
-                              {
-                                  OtherReallyCoolData = new
-                                                            {
-                                                                color = "Yellow",
-                                                                mood = "Mellow"
-                                                            }
-                              });
+        [TestMethod]
+        public void SeverityInfoTest()
+        {
+            GetNotifier().Notify(new Exception("Info Severity"), null, null, Severity.info, null);
+        }
+        
+        [TestMethod]
+        public void SeverityWarningTest()
+        {
+            GetNotifier().Notify(new Exception("Warning Severity"), null, null, Severity.info, null);
         }
 
         private static BugSnag GetNotifier()

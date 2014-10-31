@@ -9,6 +9,8 @@ using System.Web;
 using Bugsnag.Library.Data;
 using ServiceStack.Text;
 
+using Exception = Bugsnag.Library.Data.Exception;
+
 namespace Bugsnag.Library
 {
     public class BugSnag
@@ -85,8 +87,7 @@ namespace Bugsnag.Library
                                      {
                                          CreateEvent(
                                              HttpContext.Current.AllErrors.ToList(),
-                                             HttpContext.Current.Request.Path,
-                                             null)
+                                             HttpContext.Current.Request.Path)
                                              //GetDefaultUserId(), // TODO: Re-route
                                              //extraData)
                                      };
@@ -102,14 +103,18 @@ namespace Bugsnag.Library
 
         public void Notify(System.Exception exception, object extraData)
         {
-            var exceptions = new List<System.Exception> { exception };
-            Notify(exceptions, null, null, extraData);
+            Notify(exception, null, null, null, extraData);
         }
 
-        public void Notify(List<System.Exception> exList, string context, string groupingHash, object extraData)
+        public void Notify(System.Exception exception, string context, string groupingHash, Severity? severity, object extraData)
+        {
+            Notify(new[] { exception }, context, groupingHash, severity, extraData);
+        }
+
+        public void Notify(IList<System.Exception> exList, string context, string groupingHash, Severity? severity, object extraData)
         {
             var events = new List<Event>();
-            events.Add(CreateEvent(exList, context, groupingHash));
+            events.Add(CreateEvent(exList, context, groupingHash, severity));
             SendNotification(events, extraData);
         }
 
@@ -137,19 +142,25 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(List<System.Exception> exceptions, string context, string groupingHash)
+        private Event CreateEvent(IList<System.Exception> exceptions, string context = null, string groupingHash = null, Severity? severity = null)
         {
-            //  Create an event to return
             var retval = new Event
             {
+                Exceptions = MapExceptions(exceptions),
                 Context = context,
-                GroupingHash = groupingHash
+                GroupingHash = groupingHash,
+                Severity = severity ?? Severity.error,
+                App= new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion }
             };
 
-            //  Our list of exceptions:
+            return retval;
+        }
+
+        private static List<Exception> MapExceptions(IList<System.Exception> exceptions)
+        {
             var bugsnagExceptions = new List<Bugsnag.Library.Data.Exception>();
 
-            foreach(System.Exception ex in exceptions)
+            foreach (System.Exception ex in exceptions)
             {
                 //  ... Create a list of stacktraces
                 //  This may not be the best way to get this information:
@@ -159,26 +170,21 @@ namespace Bugsnag.Library
                 if (frames != null)
                 {
                     stacktraces = frames.Select(item => new Stacktrace()
-                                   {
-                                       File = item.GetFileName() ?? item.GetType().Name,
-                                       LineNumber = item.GetFileLineNumber(),
-                                       Method = item.GetMethod().Name
-                                   }).ToList();
+                                                            {
+                                                                File = item.GetFileName() ?? item.GetType().Name,
+                                                                LineNumber = item.GetFileLineNumber(),
+                                                                Method = item.GetMethod().Name
+                                                            }).ToList();
                 }
 
                 bugsnagExceptions.Add(new Bugsnag.Library.Data.Exception()
-                {
-                    ErrorClass = ex.TargetSite == null ? "Undefined" : ex.TargetSite.Name,
-                    Message = ex.Message,
-                    Stacktrace = stacktraces ?? new List<Stacktrace> { new Stacktrace { File="test", LineNumber = 0, Method = "test" } }
-                });
+                                          {
+                                              ErrorClass = ex.TargetSite == null ? "Undefined" : ex.TargetSite.Name,
+                                              Message = ex.Message,
+                                              Stacktrace = stacktraces ?? new List<Stacktrace> { new Stacktrace { File = "test", LineNumber = 0, Method = "test" } }
+                                          });
             }
-
-            retval.Exceptions = bugsnagExceptions;
-
-            retval.App = new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion };
-
-            return retval;
+            return bugsnagExceptions;
         }
 
         private void SendNotification(List<Event> events, object extraData)

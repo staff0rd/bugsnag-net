@@ -74,5 +74,15 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "groupingHash")]
         public string GroupingHash { get; set; }
+
+        /// <summary>
+        /// The severity of the error. This can be set to:
+        /// - "error"   used when the app crashes
+        /// - "warning" used when Bugsnag.notify is called
+        /// - "info"    can be used in manual Bugsnag.notify calls
+        /// (optional, default "error", filtered)
+        /// </summary>
+        [DataMember(Name = "severity")]
+        public Severity Severity { get; set; }
     }
 }

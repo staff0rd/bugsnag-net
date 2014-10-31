@@ -54,6 +54,7 @@
     <Compile Include="Data\Event.cs" />
     <Compile Include="Data\Exception.cs" />
     <Compile Include="Data\Notifier.cs" />
+    <Compile Include="Data\Severity.cs" />
     <Compile Include="Data\Stacktrace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

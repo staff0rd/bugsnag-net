@@ -11,6 +11,35 @@ namespace Bugsnag.Library.Tests
     public class NotifierTests
     {
         [TestMethod]
+        public void MinimumJsonStructureTest()
+        {
+            var notifier = new Notifier();
+            var minimumStructure = @"
+            {
+                ""apiKey"": """ + new BugSnag().ApiKey + @""",
+                ""notifier"": {
+                    ""name"": """ + notifier.Name + @""",
+                    ""version"": """ + notifier.Version + @""",
+                    ""url"": """ + notifier.Url + @"""
+                },
+                ""events"": [{
+                    ""payloadVersion"": ""2"",
+                    ""exceptions"": [{
+                        ""errorClass"": """ + ErrorNotification.EmptyString + @""",
+                        ""message"": """ + ErrorNotification.EmptyString + @""",
+                        ""stacktrace"": [{
+                            ""file"": """ + ErrorNotification.EmptyString + @""",
+                            ""lineNumber"": 0,
+                            ""method"": """ + ErrorNotification.EmptyString + @"""
+                        }]
+                    }]
+                }]
+            }";
+
+            BugSnag.Send(minimumStructure, false);
+        }
+
+        [TestMethod]
         public void ApplicationExceptionTest()
         {
             try

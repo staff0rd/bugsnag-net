@@ -15,9 +15,9 @@ namespace Bugsnag.Library.Data
     {
         public Notifier()
         {
-            Name = ".NET Bugsnag";
-            Version = "0.1";
-            Url = "https://github.com/danesparza/net-bugsnag";
+            Name = "Bugsnag .NET";
+            Version = "0.2";
+            Url = "https://github.com/staff0rd/bugsnag-net";
         }
 
         /// <summary>

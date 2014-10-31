@@ -13,9 +13,9 @@ namespace Bugsnag.Library
 {
     public class BugSnag
     {
-        private const string _httpUrl = "http://notify.bugsnag.com";
+        public const string HttpUrl = "http://notify.bugsnag.com";
 
-        private const string _httpsUrl = "https://notify.bugsnag.com";
+        public const string HttpsUrl = "https://notify.bugsnag.com";
 
         public string ApiKey { get; set; }
 
@@ -216,17 +216,14 @@ namespace Bugsnag.Library
 
         private void SendNotification(ErrorNotification notification)
         {
-            string serializedJSON = notification.SerializeToString();
+            Send(notification.SerializeToString(), UseSSL);
+        }
 
-            //  Create a byte array:
-            byte[] byteArray = Encoding.UTF8.GetBytes(serializedJSON);
+        public static void Send(string serializedJson, bool useSsl)
+        {
+            byte[] byteArray = Encoding.UTF8.GetBytes(serializedJson);
 
-            //  Post JSON to server:
-            WebRequest request;
-            if(UseSSL)
-                request = WebRequest.Create(_httpsUrl);
-            else
-                request = WebRequest.Create(_httpUrl);
+            var request = WebRequest.Create(useSsl ? HttpsUrl : HttpUrl);
 
             request.Method = WebRequestMethods.Http.Post;
             request.ContentType = "application/json";
@@ -236,6 +233,11 @@ namespace Bugsnag.Library
             dataStream.Write(byteArray, 0, byteArray.Length);
             dataStream.Close();
 
+            ValidateResponse(request);
+        }
+
+        private static void ValidateResponse(WebRequest request)
+        {
             //  Get the response.  See https://bugsnag.com/docs/notifier-api for response codes
             var response = request.GetResponse() as HttpWebResponse;
             if ((int)response.StatusCode == 400)

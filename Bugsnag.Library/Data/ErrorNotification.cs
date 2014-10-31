@@ -6,6 +6,8 @@ namespace Bugsnag.Library.Data
     [DataContract]
     public class ErrorNotification
     {
+        public const string EmptyString = "Undefined";
+
         public ErrorNotification()
         {
             NotiferData = new Notifier();

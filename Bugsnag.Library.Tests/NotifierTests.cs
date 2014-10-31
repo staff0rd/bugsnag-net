@@ -2,11 +2,6 @@
 using Bugsnag.Library.Data;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ServiceStack.Text;
-using System.Collections.Generic;
-using System.Net;
-using System.IO;
-using System.Text;
 
 namespace Bugsnag.Library.Tests
 {
@@ -23,9 +18,9 @@ namespace Bugsnag.Library.Tests
             }
             catch(System.Exception ex)
             {
-                BugSnag bs = new BugSnag()
+                BugSnag bs = new BugSnag
                 {
-                    apiKey = "YOUR_API_KEY"
+                    ApiKey = "YOUR_API_KEY"
                 };
 
                 bs.Notify(ex, new

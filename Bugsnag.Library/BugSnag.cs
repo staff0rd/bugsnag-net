@@ -85,7 +85,8 @@ namespace Bugsnag.Library
                                      {
                                          CreateEvent(
                                              HttpContext.Current.AllErrors.ToList(),
-                                             HttpContext.Current.Request.Path)
+                                             HttpContext.Current.Request.Path,
+                                             null)
                                              //GetDefaultUserId(), // TODO: Re-route
                                              //extraData)
                                      };
@@ -102,13 +103,13 @@ namespace Bugsnag.Library
         public void Notify(System.Exception exception, object extraData)
         {
             var exceptions = new List<System.Exception> { exception };
-            Notify(exceptions, null, extraData);
+            Notify(exceptions, null, null, extraData);
         }
 
-        public void Notify(List<System.Exception> exList, string context, object extraData)
+        public void Notify(List<System.Exception> exList, string context, string groupingHash, object extraData)
         {
             var events = new List<Event>();
-            events.Add(CreateEvent(exList, context));
+            events.Add(CreateEvent(exList, context, groupingHash));
             SendNotification(events, extraData);
         }
 
@@ -136,12 +137,13 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(List<System.Exception> exceptions, string context)
+        private Event CreateEvent(List<System.Exception> exceptions, string context, string groupingHash)
         {
             //  Create an event to return
             var retval = new Event
             {
-                Context = context
+                Context = context,
+                GroupingHash = groupingHash
             };
 
             //  Our list of exceptions:

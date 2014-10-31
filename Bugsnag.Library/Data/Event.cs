@@ -16,9 +16,11 @@ namespace Bugsnag.Library.Data
             Exceptions = new List<Exception>();
         }
 
-        // The version number of the payload. If not set to 2+, Severity will
-        // not be supported.
-        // (required, must be set to "2")
+        /// <summary>
+        /// The version number of the payload. If not set to 2+, Severity will
+        /// not be supported.
+        /// (required, must be set to "2")
+        /// </summary>
         [DataMember(Name = "payloadVersion")]
         public string PayloadVersion
         {
@@ -38,24 +40,39 @@ namespace Bugsnag.Library.Data
         [DataMember(Name = "exceptions")]
         public List<Exception> Exceptions { get; set; }
 
-        // Information about the app that crashed.
-        // These fields are optional but highly recommended
+        /// <summary>
+        /// Information about the app that crashed.
+        /// These fields are optional but highly recommended
+        /// </summary>
         [DataMember(Name = "app")]
         public App App { get; set; }
 
-        // A string representing what was happening in the application at the
-        // time of the error. This string could be used for grouping purposes,
-        // depending on the event.
-        // Usually this would represent the controller and action in a server
-        // based project. It could represent the screen that the user was
-        // interacting with in a client side project.
-        // For example,
-        //   * On Ruby on Rails the context could be controller#action
-        //   * In Android, the context could be the top most Activity.
-        //   * In iOS, the context could be the name of the top most
-        //     UIViewController
-        // (optional, searchable)
+        /// <summary>
+        /// A string representing what was happening in the application at the
+        /// time of the error. This string could be used for grouping purposes,
+        /// depending on the event.
+        /// Usually this would represent the controller and action in a server
+        /// based project. It could represent the screen that the user was
+        /// interacting with in a client side project.
+        /// For example,
+        ///   * On Ruby on Rails the context could be controller#action
+        ///   * In Android, the context could be the top most Activity.
+        ///   * In iOS, the context could be the name of the top most
+        ///     UIViewController
+        /// (optional, searchable)
+        /// </summary>
         [DataMember(Name = "context")]
         public string Context { get; set; }
+
+        /// <summary>
+        /// All errors with the same groupingHash will be grouped together within
+        /// the bugsnag dashboard.
+        /// This gives a notifier more control as to how grouping should be
+        /// performed. We recommend including the errorClass of the exception in
+        /// here so a different class of error will be grouped separately.
+        /// (optional)
+        /// </summary>
+        [DataMember(Name = "groupingHash")]
+        public string GroupingHash { get; set; }
     }
 }

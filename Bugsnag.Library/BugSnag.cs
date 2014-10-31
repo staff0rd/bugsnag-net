@@ -178,19 +178,23 @@ namespace Bugsnag.Library
                 //  ... Create a list of stacktraces
                 //  This may not be the best way to get this information:
                 //  http://blogs.msdn.com/b/jmstall/archive/2005/03/20/399287.aspx
-                var stacktraces = (from item in new System.Diagnostics.StackTrace(ex, true).GetFrames()
-                                   select new Stacktrace()
+                var stacktraces = default(List<Stacktrace>);
+                var frames = new System.Diagnostics.StackTrace(ex, true).GetFrames();
+                if (frames != null)
+                {
+                    stacktraces = frames.Select(item => new Stacktrace()
                                    {
                                        File = item.GetFileName() ?? item.GetType().Name ?? "N/A",
                                        LineNumber = item.GetFileLineNumber(),
                                        Method = item.GetMethod().Name
                                    }).ToList();
+                }
 
                 exceptions.Add(new Bugsnag.Library.Data.Exception()
                 {
-                    ErrorClass = ex.TargetSite.Name,
+                    ErrorClass = ex.TargetSite == null ? "Undefined" : ex.TargetSite.Name,
                     Message = ex.Message,
-                    Stacktrace = stacktraces
+                    Stacktrace = stacktraces ?? new List<Stacktrace> { new Stacktrace { File="test", LineNumber = 0, Method = "test" } }
                 });
             }
 

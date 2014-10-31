@@ -13,23 +13,15 @@ namespace Bugsnag.Library
 {
     public class BugSnag
     {
-        public const string HttpUrl = "http://notify.bugsnag.com";
+        private static string HttpUrl = "http://notify.bugsnag.com";
 
-        public const string HttpsUrl = "https://notify.bugsnag.com";
+        private const string HttpsUrl = "https://notify.bugsnag.com";
 
         public string ApiKey { get; set; }
 
-        public string ReleaseStage
-        {
-            get;
-            set;
-        }
+        public string ReleaseStage { get; set; }
 
-        public List<string> NotifyReleaseStages
-        {
-            get;
-            set;
-        }
+        public List<string> NotifyReleaseStages { get; set; }
 
         public bool UseSSL { get; set; }
 
@@ -164,7 +156,7 @@ namespace Bugsnag.Library
                 {
                     stacktraces = frames.Select(item => new Stacktrace()
                                    {
-                                       File = item.GetFileName() ?? item.GetType().Name ?? "N/A",
+                                       File = item.GetFileName() ?? item.GetType().Name,
                                        LineNumber = item.GetFileLineNumber(),
                                        Method = item.GetMethod().Name
                                    }).ToList();
@@ -180,15 +172,17 @@ namespace Bugsnag.Library
 
             retval.Exceptions = bugsnagExceptions;
 
+            retval.App = new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion };
+
             return retval;
         }
 
         private void SendNotification(List<Event> events, object extraData)
         {
-            var notification = new ErrorNotification()
+            var notification = new ErrorNotification
             {
-                ApiKey = this.ApiKey,
-                Events = events,
+                ApiKey = ApiKey,
+                Events = events
                 // TODO : Metadata = extraData
             };
 

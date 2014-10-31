@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BugSnag.cs" />
+    <Compile Include="Data\App.cs" />
     <Compile Include="Data\ErrorNotification.cs" />
     <Compile Include="Data\Event.cs" />
     <Compile Include="Data\Exception.cs" />

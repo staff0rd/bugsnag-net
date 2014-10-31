@@ -37,5 +37,10 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "exceptions")]
         public List<Exception> Exceptions { get; set; }
+
+        // Information about the app that crashed.
+        // These fields are optional but highly recommended
+        [DataMember(Name = "app")]
+        public App App { get; set; }
     }
 }

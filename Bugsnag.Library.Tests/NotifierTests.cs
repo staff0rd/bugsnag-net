@@ -67,9 +67,8 @@ namespace Bugsnag.Library.Tests
 
         private static void Notify(Exception ex)
         {
-            BugSnag bs = new BugSnag();
-            if (bs.ApiKey == "YOUR_API_KEY_HERE")
-                throw new ArgumentException("ApiKey not set in app.config");
+            var bs = GetNotifier();
+            bs.ApplicationVersion = "1.0";
 
             bs.Notify(ex, new
                               {
@@ -79,6 +78,14 @@ namespace Bugsnag.Library.Tests
                                                                 mood = "Mellow"
                                                             }
                               });
+        }
+
+        private static BugSnag GetNotifier()
+        {
+            var bugsnag = new BugSnag();
+            if (bugsnag.ApiKey == "YOUR_API_KEY_HERE")
+                throw new ArgumentException("ApiKey not set in app.config");
+            return bugsnag;
         }
     }
 }

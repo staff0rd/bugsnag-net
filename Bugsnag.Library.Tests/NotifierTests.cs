@@ -39,6 +39,8 @@ namespace Bugsnag.Library.Tests
         private static void Notify(Exception ex)
         {
             BugSnag bs = new BugSnag();
+            if (bs.ApiKey == "YOUR_API_KEY_HERE")
+                throw new ArgumentException("ApiKey not set in app.config");
 
             bs.Notify(ex, new
                               {

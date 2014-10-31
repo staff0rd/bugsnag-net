@@ -144,7 +144,8 @@ namespace Bugsnag.Library
                 Severity = severity ?? Severity.error,
                 App = new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion },
                 User = user ?? new User(),
-                Device = device
+                Device = device,
+                MetaData = extraData
             };
 
             if (retval.User.Id == null)
@@ -194,7 +195,7 @@ namespace Bugsnag.Library
 
         private void SendNotification(ErrorNotification notification)
         {
-            Send(notification.SerializeToString(), UseSSL);
+            Send(notification.ToJson(), UseSSL);
         }
 
         public static void Send(string serializedJson, bool useSsl)

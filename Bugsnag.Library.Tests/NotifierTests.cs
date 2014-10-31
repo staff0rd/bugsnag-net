@@ -103,6 +103,19 @@ namespace Bugsnag.Library.Tests
             GetNotifier().Notify(new Exception("Hostname Test"), device: new Device { Hostname = "my.host.name" });
         }
 
+        [TestMethod]
+        public void MetaDataTest()
+        {
+            GetNotifier().Notify(new Exception("MetaData Test"), extraData: new
+            {
+                OtherReallyCoolData = new
+                {
+                    color = "Red",
+                    mood = "Mellow"
+                }
+            });
+        }
+
         private static BugSnag GetNotifier()
         {
             var bugsnag = new BugSnag();

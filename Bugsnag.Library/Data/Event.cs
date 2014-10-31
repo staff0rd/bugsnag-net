@@ -16,6 +16,7 @@ namespace Bugsnag.Library.Data
             Exceptions = new List<Exception>();
             User = new User();
             Device = new Device();
+            PayloadVersion = "2";
         }
 
         /// <summary>
@@ -24,13 +25,7 @@ namespace Bugsnag.Library.Data
         /// (required, must be set to "2")
         /// </summary>
         [DataMember(Name = "payloadVersion")]
-        public string PayloadVersion
-        {
-            get
-            {
-                return "2";
-            }
-        }
+        public string PayloadVersion { get; set; }
 
         /// <summary>
         /// An array of exceptions that occurred during this event. Most of the
@@ -100,5 +95,15 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "device")]
         public Device Device { get; set; }
+
+        /// <summary>
+        /// An object containing any further data you wish to attach to this
+        /// error event. This should contain one or more objects, with each
+        /// object being displayed in its own tab on the event details on the
+        /// Bugsnag website.
+        /// (Optional).
+        /// </summary>
+        [DataMember(Name = "metaData")]
+        public dynamic MetaData { get; set; }
     }
 }

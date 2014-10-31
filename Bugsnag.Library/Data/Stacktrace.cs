@@ -15,37 +15,32 @@ namespace Bugsnag.Library.Data
     [DataContract]
     public class Stacktrace
     {
+        public Stacktrace()
+        {
+            // Minimum required fields must be populated
+            File = ErrorNotification.EmptyString;
+            Method = ErrorNotification.EmptyString;
+        }
+
         /// <summary>
         /// The file that this stack frame was executing.
         /// It is recommended that you strip any unnecessary or common
         /// information from the beginning of the path.
         /// </summary>
         [DataMember(Name = "file")]
-        public string File
-        {
-            get;
-            set;
-        }
+        public string File { get; set; }
 
         /// <summary>
         /// The line of the file that this frame of the stack was in.
         /// </summary>
         [DataMember(Name = "lineNumber")]
-        public int LineNumber
-        {
-            get;
-            set;
-        }
+        public int LineNumber { get; set; }
 
         /// <summary>
         /// The method that this particular stack frame is within.
         /// </summary>
         [DataMember(Name = "method")]
-        public string Method
-        {
-            get;
-            set;
-        }
+        public string Method { get; set; }
 
         /// <summary>
         /// Is this stacktrace line is in the user's project code, set 
@@ -57,10 +52,6 @@ namespace Bugsnag.Library.Data
         /// (Optional, defaults to false).
         /// </summary>
         [DataMember(Name = "inProject")]
-        public bool InProject
-        {
-            get;
-            set;
-        }
+        public bool InProject { get; set; }
     }
 }

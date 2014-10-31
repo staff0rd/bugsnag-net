@@ -92,13 +92,13 @@ namespace Bugsnag.Library
                     var events = new List<Event>
                                      {
                                          CreateEvent(
-                                             HttpContext.Current.AllErrors.ToList(),
-                                             HttpContext.Current.Request.Path,
-                                             GetDefaultUserId(),
-                                             extraData)
+                                             HttpContext.Current.AllErrors.ToList())
+                                             //HttpContext.Current.Request.Path, // TODO: Re-route
+                                             //GetDefaultUserId(), // TODO: Re-route
+                                             //extraData)
                                      };
 
-                    SendNotification(events);
+                    SendNotification(events, extraData);
                 }
             }
             else
@@ -107,30 +107,18 @@ namespace Bugsnag.Library
             }
         }
 
-        public void Notify(System.Exception exception, object extraData) 
+        public void Notify(System.Exception exception, object extraData)
         {
-            Notify(exception, string.Empty, string.Empty, extraData);
+            var exceptions = new List<System.Exception> { exception };
+            Notify(exceptions, extraData);
         }
 
-        public void Notify(List<System.Exception> exceptions, object extraData)
+        public void Notify(List<System.Exception> exList, object extraData)
         {
-            Notify(exceptions, string.Empty, string.Empty, extraData);
-        }
-
-        public void Notify(System.Exception exception, string userId, string context, object extraData)
-        {
-            var exceptions = new List<System.Exception>();
-            exceptions.Add(exception);
-            Notify(exceptions, userId, context, extraData);
-        }
-
-        public void Notify(List<System.Exception> exList, string userId, string context, object extraData)
-        {
-            //  Add an event for this exception list:
             var events = new List<Event>();
-            events.Add(CreateEvent(exList, context, userId, extraData));
+            events.Add(CreateEvent(exList));
 
-            SendNotification(events);
+            SendNotification(events, extraData);
         }
 
         private string GetDefaultUserId()
@@ -157,23 +145,15 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(List<System.Exception> exList, string Context, string UserId, object extraData)
+        private Event CreateEvent(List<System.Exception> exceptions)
         {
             //  Create an event to return
-            var retval = new Event()
-            {
-                AppVersion = this.ApplicationVersion,
-                Context = Context,
-                OSVersion = this.OsVersion,
-                ReleaseStage = this.ReleaseStage,
-                UserId = UserId,
-                ExtraData = extraData
-            };
+            var retval = new Event();
 
             //  Our list of exceptions:
-            var exceptions = new List<Bugsnag.Library.Data.Exception>();
+            var bugsnagExceptions = new List<Bugsnag.Library.Data.Exception>();
 
-            foreach(System.Exception ex in exList)
+            foreach(System.Exception ex in exceptions)
             {
                 //  ... Create a list of stacktraces
                 //  This may not be the best way to get this information:
@@ -190,7 +170,7 @@ namespace Bugsnag.Library
                                    }).ToList();
                 }
 
-                exceptions.Add(new Bugsnag.Library.Data.Exception()
+                bugsnagExceptions.Add(new Bugsnag.Library.Data.Exception()
                 {
                     ErrorClass = ex.TargetSite == null ? "Undefined" : ex.TargetSite.Name,
                     Message = ex.Message,
@@ -198,17 +178,18 @@ namespace Bugsnag.Library
                 });
             }
 
-            retval.Exceptions = exceptions;
+            retval.Exceptions = bugsnagExceptions;
 
             return retval;
         }
 
-        private void SendNotification(List<Event> events)
+        private void SendNotification(List<Event> events, object extraData)
         {
             var notification = new ErrorNotification()
             {
                 ApiKey = this.ApiKey,
-                Events = events
+                Events = events,
+                // TODO : Metadata = extraData
             };
 
             SendNotification(notification);

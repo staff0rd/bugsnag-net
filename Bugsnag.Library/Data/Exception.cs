@@ -16,6 +16,14 @@ namespace Bugsnag.Library.Data
     [DataContract]
     public class Exception
     {
+        public Exception()
+        {
+            // Minimum required fields must be populated
+            ErrorClass = ErrorNotification.EmptyString;
+            Message = ErrorNotification.EmptyString;
+            Stacktrace = new List<Stacktrace> { new Stacktrace() };
+        }
+
         /// <summary>
         /// The class of error that occurred. This field is used to group the
         /// errors together so should not contain any contextual information
@@ -23,11 +31,7 @@ namespace Bugsnag.Library.Data
         /// Exception name when dealing with an exception.
         /// </summary>
         [DataMember(Name = "errorClass")]
-        public string ErrorClass
-        {
-            get;
-            set;
-        }
+        public string ErrorClass { get; set; }
 
         /// <summary>
         /// The error message associated with the error. Usually this will 
@@ -35,11 +39,7 @@ namespace Bugsnag.Library.Data
         /// and is not used to group the errors (optional, default none).
         /// </summary>
         [DataMember(Name = "message")]
-        public string Message
-        {
-            get;
-            set;
-        }
+        public string Message { get; set; }
 
         /// <summary>
         /// An array of stacktrace objects. Each object represents one line in
@@ -47,10 +47,6 @@ namespace Bugsnag.Library.Data
         /// with error grouping, as well as displaying it to the user.
         /// </summary>
         [DataMember(Name = "stacktrace")]
-        public List<Stacktrace> Stacktrace
-        {
-            get;
-            set;
-        }
+        public List<Stacktrace> Stacktrace { get; set; }
     }
 }

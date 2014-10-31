@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace Bugsnag.Library.Data
 {
@@ -23,31 +18,19 @@ namespace Bugsnag.Library.Data
         /// <summary>
         /// The notifier name
         /// </summary>
-        [DataMember(Name="name")]
-        public string Name
-        {
-            get;
-            set;
-        }
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
 
         /// <summary>
         /// The notifier's current version
         /// </summary>
         [DataMember(Name = "version")]
-        public string Version
-        {
-            get;
-            set;
-        }
+        public string Version { get; set; }
 
         /// <summary>
         /// The URL associated with the notifier
         /// </summary>
         [DataMember(Name = "url")]
-        public string Url
-        {
-            get;
-            set;
-        }
+        public string Url { get; set; }
     }
 }

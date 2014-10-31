@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bugsnag.Library.Data
 {
@@ -20,7 +16,7 @@ namespace Bugsnag.Library.Data
         /// has generated this error.
         /// </summary>
         [DataMember(Name="apiKey")]
-        public string Api_Key
+        public string ApiKey
         {
             get;
             set;

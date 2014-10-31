@@ -72,28 +72,23 @@ namespace Bugsnag.Library
                 ApplicationVersion = ConfigurationManager.AppSettings["applicationVersion"];
         }
 
-        public void Notify()
+        public void WebNotify()
         {
-            Notify(null);
+            WebNotify(null);
         }
 
-        public void Notify(object extraData)
+        public void WebNotify(object extraData)
         {
             if(HttpContext.Current != null)
             {
                 if (HttpContext.Current.AllErrors != null && HttpContext.Current.AllErrors.Any())
                 {
-                    var events = new List<Event>
-                                     {
-                                         CreateEvent(
-                                             HttpContext.Current.AllErrors.ToList(),
-                                             HttpContext.Current.Request.Path)
-                                             //GetDefaultUserId(), // TODO: Re-route
-                                             //extraData)
-                                     };
-
-                    SendNotification(events, extraData);
+                    Notify(
+                        HttpContext.Current.AllErrors.ToList(),
+                        HttpContext.Current.Request.Path,
+                        extraData: extraData);
                 }
+                // TODO: Now what?
             }
             else
             {
@@ -101,38 +96,37 @@ namespace Bugsnag.Library
             }
         }
 
-        public void Notify(System.Exception exception, object extraData)
+        public void Notify(System.Exception exception, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
         {
-            Notify(exception, null, null, null, extraData);
+            Notify(new[] { exception }, context, groupingHash, severity, user, extraData);
         }
 
-        public void Notify(System.Exception exception, string context, string groupingHash, Severity? severity, object extraData)
-        {
-            Notify(new[] { exception }, context, groupingHash, severity, extraData);
-        }
-
-        public void Notify(IList<System.Exception> exList, string context, string groupingHash, Severity? severity, object extraData)
+        public void Notify(IList<System.Exception> exList, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
         {
             var events = new List<Event>();
-            events.Add(CreateEvent(exList, context, groupingHash, severity));
-            SendNotification(events, extraData);
+            events.Add(CreateEvent(exList, context, groupingHash, severity, user, extraData));
+
+            var notification = new ErrorNotification
+            {
+                ApiKey = ApiKey,
+                Events = events
+            };
+
+            SendNotification(notification);
         }
 
         private string GetDefaultUserId()
         {
             string userId = string.Empty;
 
-            //  First, check to see if we have an HttpContext to work with
             if(HttpContext.Current != null)
             {
-                //  If we have a current user, use that
                 if(!string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
                 {
                     userId = HttpContext.Current.User.Identity.Name;
                 }
                 else if(HttpContext.Current.Session != null)
                 {
-                    //  Otherwise, use sessionID
                     userId = HttpContext.Current.Session.SessionID ?? String.Empty;
                 }
             }
@@ -142,7 +136,7 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(IList<System.Exception> exceptions, string context = null, string groupingHash = null, Severity? severity = null)
+        private Event CreateEvent(IList<System.Exception> exceptions, string context = null, string groupingHash = null, Severity? severity = null, User user = null, object extraData = null)
         {
             var retval = new Event
             {
@@ -150,8 +144,20 @@ namespace Bugsnag.Library
                 Context = context,
                 GroupingHash = groupingHash,
                 Severity = severity ?? Severity.error,
-                App= new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion }
+                App = new App { ReleaseStage = ReleaseStage, Version = ApplicationVersion },
+                User = user ?? new User()
             };
+
+            if (retval.User.Id == null)
+                retval.User.Id = GetDefaultUserId();
+
+            if (retval.Exceptions.Any())
+            {
+                if (retval.Context == null)
+                    retval.Context = retval.Exceptions.First().Stacktrace.First().File;
+                if (retval.GroupingHash == null)
+                    retval.GroupingHash = retval.Exceptions.First().Stacktrace.First().File;
+            }
 
             return retval;
         }
@@ -185,18 +191,6 @@ namespace Bugsnag.Library
                                           });
             }
             return bugsnagExceptions;
-        }
-
-        private void SendNotification(List<Event> events, object extraData)
-        {
-            var notification = new ErrorNotification
-            {
-                ApiKey = ApiKey,
-                Events = events
-                // TODO : Metadata = extraData
-            };
-
-            SendNotification(notification);
         }
 
         private void SendNotification(ErrorNotification notification)

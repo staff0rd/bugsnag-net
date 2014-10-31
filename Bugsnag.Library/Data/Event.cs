@@ -14,6 +14,7 @@ namespace Bugsnag.Library.Data
         public Event()
         {
             Exceptions = new List<Exception>();
+            User = new User();
         }
 
         /// <summary>
@@ -84,5 +85,12 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "severity")]
         public Severity Severity { get; set; }
+
+        /// <summary>
+        /// Information about the user affected by the crash.
+        /// These fields are optional but highly recommended.
+        /// </summary>
+        [DataMember(Name = "user")]
+        public User User { get; set; }
     }
 }

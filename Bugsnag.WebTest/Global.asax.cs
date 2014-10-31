@@ -30,7 +30,7 @@ namespace Bugsnag.WebTest
 
             //  Notify.  This will get configuration from the web.config
             //  and gather all known errors and report them.  It's just that simple!
-            bs.Notify();
+            bs.WebNotify();
         }
     }
 }

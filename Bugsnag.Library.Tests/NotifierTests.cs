@@ -76,13 +76,19 @@ namespace Bugsnag.Library.Tests
         [TestMethod]
         public void SeverityInfoTest()
         {
-            GetNotifier().Notify(new Exception("Info Severity"), null, null, Severity.info, null);
+            GetNotifier().Notify(new Exception("Info Severity"), severity: Severity.info);
         }
         
         [TestMethod]
         public void SeverityWarningTest()
         {
-            GetNotifier().Notify(new Exception("Warning Severity"), null, null, Severity.info, null);
+            GetNotifier().Notify(new Exception("Warning Severity"), severity: Severity.warning);
+        }
+
+        [TestMethod]
+        public void EmailTest()
+        {
+            GetNotifier().Notify(new Exception("Email Test"), user: new User { Email = "test@email.com" });
         }
 
         private static BugSnag GetNotifier()

@@ -56,6 +56,7 @@
     <Compile Include="Data\Notifier.cs" />
     <Compile Include="Data\Severity.cs" />
     <Compile Include="Data\Stacktrace.cs" />
+    <Compile Include="Data\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

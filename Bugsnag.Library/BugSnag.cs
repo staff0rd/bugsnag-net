@@ -84,8 +84,8 @@ namespace Bugsnag.Library
                     var events = new List<Event>
                                      {
                                          CreateEvent(
-                                             HttpContext.Current.AllErrors.ToList())
-                                             //HttpContext.Current.Request.Path, // TODO: Re-route
+                                             HttpContext.Current.AllErrors.ToList(),
+                                             HttpContext.Current.Request.Path)
                                              //GetDefaultUserId(), // TODO: Re-route
                                              //extraData)
                                      };
@@ -102,14 +102,13 @@ namespace Bugsnag.Library
         public void Notify(System.Exception exception, object extraData)
         {
             var exceptions = new List<System.Exception> { exception };
-            Notify(exceptions, extraData);
+            Notify(exceptions, null, extraData);
         }
 
-        public void Notify(List<System.Exception> exList, object extraData)
+        public void Notify(List<System.Exception> exList, string context, object extraData)
         {
             var events = new List<Event>();
-            events.Add(CreateEvent(exList));
-
+            events.Add(CreateEvent(exList, context));
             SendNotification(events, extraData);
         }
 
@@ -137,10 +136,13 @@ namespace Bugsnag.Library
             return userId;
         }
 
-        private Event CreateEvent(List<System.Exception> exceptions)
+        private Event CreateEvent(List<System.Exception> exceptions, string context)
         {
             //  Create an event to return
-            var retval = new Event();
+            var retval = new Event
+            {
+                Context = context
+            };
 
             //  Our list of exceptions:
             var bugsnagExceptions = new List<Bugsnag.Library.Data.Exception>();

@@ -42,5 +42,20 @@ namespace Bugsnag.Library.Data
         // These fields are optional but highly recommended
         [DataMember(Name = "app")]
         public App App { get; set; }
+
+        // A string representing what was happening in the application at the
+        // time of the error. This string could be used for grouping purposes,
+        // depending on the event.
+        // Usually this would represent the controller and action in a server
+        // based project. It could represent the screen that the user was
+        // interacting with in a client side project.
+        // For example,
+        //   * On Ruby on Rails the context could be controller#action
+        //   * In Android, the context could be the top most Activity.
+        //   * In iOS, the context could be the name of the top most
+        //     UIViewController
+        // (optional, searchable)
+        [DataMember(Name = "context")]
+        public string Context { get; set; }
     }
 }

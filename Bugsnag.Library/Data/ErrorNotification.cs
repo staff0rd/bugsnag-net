@@ -34,6 +34,6 @@ namespace Bugsnag.Library.Data
         /// can notify Bugsnag each time an event occurs. 
         /// </summary>
         [DataMember(Name = "events")]
-        public List<Event> Events { get; set; }
+        public IList<Event> Events { get; set; }
     }
 }

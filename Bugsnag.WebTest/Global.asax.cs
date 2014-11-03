@@ -26,11 +26,11 @@ namespace Bugsnag.WebTest
         protected void Application_Error(object sender, EventArgs e)
         {
             //  Create a new BugSnag notifier
-            BugSnag bs = new BugSnag();
+            var notifier = new WebNotifier();
 
             //  Notify.  This will get configuration from the web.config
             //  and gather all known errors and report them.  It's just that simple!
-            bs.WebNotify();
+            notifier.Notify();
         }
     }
 }

@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BugSnag.cs" />
     <Compile Include="Data\App.cs" />
     <Compile Include="Data\Device.cs" />
     <Compile Include="Data\ErrorNotification.cs" />
@@ -59,7 +58,10 @@
     <Compile Include="Data\Severity.cs" />
     <Compile Include="Data\Stacktrace.cs" />
     <Compile Include="Data\User.cs" />
+    <Compile Include="ExceptionMapper.cs" />
+    <Compile Include="Notifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebNotifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

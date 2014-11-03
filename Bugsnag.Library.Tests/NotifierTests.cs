@@ -13,10 +13,10 @@ namespace Bugsnag.Library.Tests
         [TestMethod]
         public void MinimumJsonStructureTest()
         {
-            var notifier = new Notifier();
+            var notifier = new Bugsnag.Library.Data.Notifier();
             var minimumStructure = @"
             {
-                ""apiKey"": """ + new BugSnag().ApiKey + @""",
+                ""apiKey"": """ + new Notifier().ApiKey + @""",
                 ""notifier"": {
                     ""name"": """ + notifier.Name + @""",
                     ""version"": """ + notifier.Version + @""",
@@ -36,7 +36,7 @@ namespace Bugsnag.Library.Tests
                 }]
             }";
 
-            BugSnag.Send(minimumStructure, false);
+            Notifier.Send(minimumStructure, false);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Bugsnag.Library.Tests
             }
             catch(Exception e)
             {
-                GetNotifier().Notify(e);
+                Notify(e);
             }
         }
 
@@ -61,67 +61,88 @@ namespace Bugsnag.Library.Tests
             }
             catch (Exception e)
             {
-                GetNotifier().Notify(e);
+                Notify(e);
             }
         }
 
         [TestMethod]
         public void VersionTest()
         {
-            var bs = GetNotifier();
-            bs.ApplicationVersion = "1.0";
-            bs.Notify(new Exception());
+            var ev = GetEvent();
+            ev.App = new App { Version = "2.0" };
+            Notify(ev);
         }
 
         [TestMethod]
         public void SeverityInfoTest()
         {
-            GetNotifier().Notify(new Exception("Info Severity"), severity: Severity.info);
+            var ev = GetEvent("Info Severity");
+            ev.Severity = Severity.info;
+            Notify(ev);
         }
         
         [TestMethod]
         public void SeverityWarningTest()
         {
-            GetNotifier().Notify(new Exception("Warning Severity"), severity: Severity.warning);
+            var ev = GetEvent("Warning Severity");
+            ev.Severity = Severity.warning;
+            Notify(ev);
         }
 
         [TestMethod]
         public void EmailTest()
         {
-            GetNotifier().Notify(new Exception("Email Test"), user: new User { Email = "test@email.com" });
+            var ev = GetEvent("Email test");
+            ev.User = new User { Email = "test@email.com" };
+            Notify(ev);
         }
 
         [TestMethod]
         public void OsVersionTest()
         {
-            GetNotifier().Notify(new Exception("Os Version Test"), device: new Device { OsVersion = "1.1.1" });
+            var ev = GetEvent("Os Version Test");
+            ev.Device = new Device { OsVersion = "1.1.1" };
+            Notify(ev);
         }
 
         [TestMethod]
         public void HostnameTest()
         {
-            GetNotifier().Notify(new Exception("Hostname Test"), device: new Device { Hostname = "my.host.name" });
+            var ev = GetEvent("Hostname Test");
+            ev.Device = new Device { Hostname = "my.host.name" };
+            Notify(ev);
         }
 
         [TestMethod]
         public void MetaDataTest()
         {
-            GetNotifier().Notify(new Exception("MetaData Test"), extraData: new
-            {
-                OtherReallyCoolData = new
-                {
-                    color = "Red",
-                    mood = "Mellow"
-                }
-            });
+            var ev = GetEvent("MetaData Test");
+            ev.MetaData = new
+                              {
+                                  OtherReallyCoolData = new
+                                                            {
+                                                                color = "Red",
+                                                                mood = "Mellow"
+                                                            }
+                              };
         }
 
-        private static BugSnag GetNotifier()
+        private Event GetEvent(string message = null)
         {
-            var bugsnag = new BugSnag();
-            if (bugsnag.ApiKey == "YOUR_API_KEY_HERE")
+            return Notifier.CreateEvent(new Exception(message));
+        }
+
+        private static void Notify(System.Exception exception)
+        {
+            Notify(Notifier.CreateEvent(exception));
+        }
+
+        private static void Notify(Event ev)
+        {
+            var notifier = new Notifier();
+            if (notifier.ApiKey == "YOUR_API_KEY_HERE")
                 throw new ArgumentException("ApiKey not set in app.config");
-            return bugsnag;
+            notifier.Notify(ev);
         }
     }
 }

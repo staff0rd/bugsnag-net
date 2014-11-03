@@ -33,15 +33,17 @@ namespace Bugsnag.Library
             {
                 if (HttpContext.Current.AllErrors != null && HttpContext.Current.AllErrors.Any())
                 {
-                    base.Notify(
+                    var ev = CreateEvent(
                         HttpContext.Current.AllErrors.ToList(),
                         HttpContext.Current.Request.Path,
                         null,
                         Severity.error, 
-                        GetUser(),
+                        null,
                         App,
                         null,
                         extraData);
+                    ev.PopulateUser(true);
+                    Notify(ev);
                 }
                 // TODO: Now what?
             }
@@ -49,21 +51,6 @@ namespace Bugsnag.Library
             {
                 throw new NotImplementedException("Web application supported only at this time, use another method.");
             }
-        }
-
-        private User GetUser()
-        {
-            var user = new User();
-
-            if(HttpContext.Current != null)
-            {
-                if(!string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
-                    user.Name = HttpContext.Current.User.Identity.Name;
-                else if(HttpContext.Current.Session != null)
-                    user.Id = HttpContext.Current.Session.SessionID ?? String.Empty;
-            }
-
-            return null;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Web;
 
 namespace Bugsnag.Library.Data
 {
@@ -105,5 +107,20 @@ namespace Bugsnag.Library.Data
         /// </summary>
         [DataMember(Name = "metaData")]
         public dynamic MetaData { get; set; }
+
+        public void PopulateUser(bool forceWeb = false)
+        {
+            User = new User();
+
+            if (HttpContext.Current != null)
+            {
+                if (!string.IsNullOrEmpty(HttpContext.Current.User.Identity.Name))
+                    User.Name = HttpContext.Current.User.Identity.Name;
+                else if (HttpContext.Current.Session != null)
+                    User.Id = HttpContext.Current.Session.SessionID ?? String.Empty;
+            }
+            else if (!forceWeb)
+                User.Name = Environment.UserName;
+        }
     }
 }
